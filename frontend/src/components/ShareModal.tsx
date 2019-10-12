@@ -1,11 +1,13 @@
 import * as React from 'react';
 
-import { Button, Modal , Glyphicon } from 'react-bootstrap';
+import { Modal , Glyphicon } from 'react-bootstrap';
 
 interface Props {
     error: boolean;
     link: string;
     closeCallback: () => void;
+    formContractCallback: () => void;
+    enocontract: boolean;
 }
 
 class ShareModal extends React.Component<Props, any> {
@@ -13,51 +15,80 @@ class ShareModal extends React.Component<Props, any> {
         super(props);
 
         this.closeShareModal = this.closeShareModal.bind(this);
+        this.formContract = this.formContract.bind(this);
     }
 
     render() {
         if (!this.props.error) {
+            let style: any = {};
+            style.margin = '10px 0 0 0';
             return (
                 <Modal show={true} onHide={this.closeShareModal}>
-                    <Modal.Header closeButton={true}>
-                        <Modal.Title>Erstellung des Teilen-Links erfolgreich</Modal.Title>
+                    <Modal.Header closeButton={false}>
+                        <Modal.Title>Share link creation successful</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="input-group">
                             <input type="text" className="form-control js-copytextarea" value={this.props.link} />
                             <span className="input-group-btn">
-                                <button className="btn btn-default" onClick={this.copyShareLink} type="button">
+                                <button className="btn btn-def-alt" onClick={this.copyShareLink} type="button">
                                     <Glyphicon glyph={'copy'} />
                                 </button>
                             </span>
                         </div>
-                        <p className="text-justify">
-                            Nutze den obigen Link, um deinen Code mit deinen Freunden zu teilen.<br/>
-                            <b>Hinweis:</b> Unter dem Link befindet sich eine schreibgeschützte Version Deines Codes.
-                            Für veränderte Versionen Deines Codes musst Du also einen neuen Teilen-Link erstellen.
+                        <p className="text-justify" style={style}>
+                            Use the above link to share your code.<br/>
+                            <b>Attention:</b> The link refers to a read-only version of your code.
+                            To share a modified version of your code, please create a new share link.
                         </p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.closeShareModal}>Schließen</Button>
+                        <button className="btn btn-def-alt" type="button"
+                        onClick={this.closeShareModal}>Close</button>
+                    </Modal.Footer>
+                </Modal>
+            );
+        } else if (this.props.enocontract) {
+            return (
+                <Modal show={true} onHide={this.closeShareModal}>
+                    <Modal.Header closeButton={false}>
+                        <Modal.Title>Share link creation failed</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Creating a share link for your code failed.<br/>
+                        But I think only other <em>Magical Users</em> have the right to
+                        criticize that.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button className="btn btn-suc-alt" type="button"
+                        onClick={this.formContract}>Become a <em>Magical
+                        User</em></button>
+                        <button className="btn btn-def-alt" type="button"
+                        onClick={this.closeShareModal}>Close</button>
                     </Modal.Footer>
                 </Modal>
             );
         } else {
             return (
                 <Modal show={true} onHide={this.closeShareModal}>
-                    <Modal.Header closeButton={true}>
-                        <Modal.Title>Fehler beim Erstellen des Teilen-Links</Modal.Title>
+                    <Modal.Header closeButton={false}>
+                        <Modal.Title>Share link creation failed</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Es konnte leider kein Teilen-Link erstellt werden.<br/>
-                        Versuche es später noch einmal.
+                        Creating a share link for your code failed.<br/>
+                        Please try again later.
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.closeShareModal}>Schließen</Button>
+                        <button className="btn btn-def-alt" type="button"
+                        onClick={this.closeShareModal}>Close</button>
                     </Modal.Footer>
                 </Modal>
             );
         }
+    }
+
+    formContract() {
+        this.props.formContractCallback();
     }
 
     closeShareModal() {
